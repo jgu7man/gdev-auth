@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>{{data['adverticeLabel']}}</h1>
+<div mat-dialog-content [innerHTML]="data['googleAccountAdverticeLabel']">
+
+</div>
+<div mat-dialog-actions>
+    <button mat-raised-button (click)="onClick()">
+      {{data['adverticeConfirmBtn']}}
+    </button>
+</div>

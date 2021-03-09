@@ -1,0 +1,26 @@
+{
+  "name": "gdev-auth",
+  "version": "0.1.2",
+  "peerDependencies": {
+    "@angular/common": "^11.0.9",
+    "@angular/core": "^11.0.9",
+    "@angular/fire": "^6.1.4",
+    "@angular/forms": "~11.0.5",
+    "@angular/material": "^11.2.2",
+    "@angular/animations": "^11.0.9",
+    "@angular/cdk": "^11.2.3",
+    "firebase": "^7.0 || ^8.0",
+    "rxjs": "~6.6.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "license" : "MIT",
+  "author": "Jorge Gu7man <jguzman@marxadigital.com> (https://marxadigital.com/)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jgu7man/gdev-auth.git"
+  }
+
+
+}
