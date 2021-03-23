@@ -15,7 +15,7 @@ export class LoginButtonComponent implements OnInit {
   @Input() public googleAccountAdverticeLabel: string = '<p>You must have a Gmail account <i>(yourusername@<b>gmail.com</b>)</i> to sign in.</p>'
   @Input() public adverticeConfirmBtn: string = 'Got It'
 
-
+  @Input() accountAdvertice: boolean = true
   @Output() isLogged: EventEmitter<any> = new EventEmitter()
   constructor(
     public dialog: MatDialog,

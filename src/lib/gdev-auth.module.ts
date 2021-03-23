@@ -6,6 +6,7 @@ import { MaterialModule } from '../shared/material.module';
 import { LoginButtonComponent, LoginButtonDialog } from './components/login-button/login-button.component';
 import { LoginCardComponent } from './components/login-card/login-card.component';
 import { RestorePasswordComponent } from './components/restore-password/restore-password.component';
+import { RestorePasswordDialog } from './components/restore-password-dialog/restore-password.dialog';
 
 
 
@@ -14,7 +15,8 @@ import { RestorePasswordComponent } from './components/restore-password/restore-
     LoginButtonDialog,
     LoginButtonComponent,
     LoginCardComponent,
-    RestorePasswordComponent
+    RestorePasswordComponent,
+    RestorePasswordDialog,
   ],
   imports: [
     MaterialModule,

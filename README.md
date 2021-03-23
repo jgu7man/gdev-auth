@@ -49,6 +49,12 @@ You can use the pre-builded components or the login service
 ### Fast Google Sing In
 As fast method to authenticate users with google accounts you can use auth pop-up authenticate method and need activate the **Firebase Google Sing In** method in the console.
 
+#### Reactive Button
+A simple button that easy log in and log out with Google account (for the time being).
+In any component or part of your application you can put the `login-button` as you need
+
+As default this component first displays a modal witth advertice that the user need a *Google Account*
+
 ```html
 <!-- your-components.component.html -->
 <gdev-login-button (isLogged)="onLogged($event)" ></gdev-login-button>
@@ -69,6 +75,13 @@ export class LoginComponent implements OnInit {
 After Sign In this button will change from **SingIn** label to **SingOut** label.
 You can change labels of template.
 
+Listen events
+| Event | Example |
+|------------------|------------------|
+|@Output() isLogged: EventEmitter<firebase.User> | Emits a firebase user that contains Google User data |
+|@Input() accountAdvertice: boolean | As default is `true`. Whether the modal will appear |
+
+
 |Name|Example & Default |
 |---------------------|--------------------------|
 | signInLabel: string | [signInLabel]="Sign In"  |
@@ -79,6 +92,7 @@ You can change labels of template.
 
 
 ### Pre-builded components
+#### Login Card Component
 In some routed component you can set the `login-card`
 ```html
 <!-- your-component.html-->
@@ -102,18 +116,97 @@ export  class  LoginComponent  implements  OnInit  {
 
 	onSubmit(fields:  GdevLoginFields)  {
 		this._authService.emailSignIn(fields.email,  fields.password)
+    // This emit a Promise with firebase.User
+    .then(user => console.log(user))
 	}
 }
 ```
-You can change labels of template.
+
+##### CUSTOMIZATIONS
+You can listen events
+| Event | Example |
+|------------------|------------------|
+|@Output() onSubmit: EventEmitter<GdevLoginFields> | Emits an object that contains the email and password strings|
+|@Output() restorePwd: EventEmitter<void> | Emits a void event in the click event on "I forgot my password" label link|
+
+
+You can also change labels of template.
 
 |Name|Example & Default |
 |---------------------|--------------------------|
-| signInTitle: string | [signInTitle]="Sign In"  |
+| @Input() signInTitle: string | signInTitle="Sign In"  |
+| @Input() emailLabel: string | emailLabel="Email"  |
+| @Input() passwordLabel: string | passwordLabel="Password"  |
+| @Input() forgotPasswordLabel: string | forgotPasswordLabel="I forgot my password"  |
+| @Input() signInButton: string | adverticeConfirmBtn="Sign In"  |
+
+
+
+#### Restore Password Component
+
+In some routed component you can set the `restore-password`
+```html
+<!-- your-component.html-->
+<gdev-restore-password 
+  [autoSend]="false"  
+  (onSubmit)="onSubmit($event)"
+></gdev-restore-password>
+```
+As default, the component sends an event to **your firebase project** to send an email to restore the password.
+If you need control on Submit click, desactive autoSend and set and function to linten click event. The event emits a `void` event to you can do any you want with that.
+
+Also you can combine both components using the `restore-password-dialog`:
+
+```html
+<!-- your-component.html -->
+<gdev-login-card (restorePwd)="onRestorePwd()" ></gdev-login-card>
+```
+
+```ts
+// your-component.ts
+import  {  Component,  OnInit  }  from  '@angular/core';
+import  {  GdevAuthService,  GdevLoginFields  }  from  'gdev-auth';
+// Don't forget import MatDialog
+import { MatDialog } from '@angular/material/dialog';
+
+@Component({
+	templateUrl:  './login.component.html',
+	styleUrls:  ['./login.component.scss']
+})
+export  class  LoginComponent  implements  OnInit  {
+
+	constructor( private  _authService:  GdevAuthService )  {  }
+
+	ngOnInit():  void  { }
+
+	onRestorePwd(): void {
+    this._dialog.open(RestorePasswordDialog, {
+      width: '450px',
+      data: {
+        requiredLabel: 'This field is required',
+        confirmationMessage: 'Some email was sent to the email address'
+      }
+    })
+  }
+}
+```
+
+##### CUSTOMIZATIONS
+| Event | Example |
+|------------------|------------------|
+|@Input() autoSend: boolean | As default is `true`. Change the behaviour on Click button.|
+|@Output() onSubmit: EventEmitter<void> | Emits a void event in the click event on send button|
+
+Change labels:
+|Name|Example & Default |
+|---------------------|--------------------------|
 | emailLabel: string | [emailLabel]="Email"  |
-| passwordLabel: string | [passwordLabel]="Password"  |
-| forgotPasswordLabel: string | [forgotPasswordLabel]="I forgot my password"  |
-| signInButton: string | [adverticeConfirmBtn]="Sign In"  |
+| exampleLabel: string | [exampleLabel]="example@gmail.com"  |
+| requiredLabel: string | [requiredLabel]="This field is required"  |
+| cancelButtonLabel: string | [cancelButtonLabel]="Cancel"  |
+| sendButtonLabel: string | [sendButtonLabel]="Send"  |
+| confirmationMessage: string | [confirmationMessage]="`Sending an email to ${email} for restore password`"  |
+
 
 
 
@@ -193,36 +286,13 @@ export class LoginComponent implements OnInit {
 ```
 
 
-## Extras
-### Restore Password
-For use the firestore method to restore password you can use the `restorePwd`
-```ts
-export class LoginComponent implements OnInit {
 
-	public emailToRestore: string
-	constructor( private  _authService:  GdevAuthService )  {}
-
-	onRestorePassword(){
-		this._authService.restorePwd(
-		this.emailToRestore, 
-		'any-message-to-alert-that-a-mail-was-sent'
-		)
-	}
-```
 
 Or you can use the **Restore Password Component** too, that you can insert in any HTML document for request and email address to send a firebase restore mail:
 ```html
 <gdev-restore-password></gdev-restore-password>
 ```
 
-|Name|Example & Default |
-|---------------------|--------------------------|
-| emailLabel: string | [emailLabel]="Email"  |
-| exampleLabel: string | [exampleLabel]="example@gmail.com"  |
-| requiredLabel: string | [requiredLabel]="This field is required"  |
-| cancelButtonLabel: string | [cancelButtonLabel]="Cancel"  |
-| sendButtonLabel: string | [sendButtonLabel]="Send"  |
-| confirmationMessage: string | [confirmationMessage]="`Sending an email to ${email} for restore password`"  |
 
 
 

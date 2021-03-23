@@ -23,7 +23,7 @@ export class LoginCardComponent implements OnInit {
   @Input() background: string = ''
 
   @Output() onSubmit = new EventEmitter<GdevLoginFields>()
-  @Output() restorePwd = new EventEmitter<any>()
+  @Output() restorePwd = new EventEmitter<void>()
 
   constructor() { }
 

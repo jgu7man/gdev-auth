@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable, of, Subject } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { Router } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase/app';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +20,7 @@ export class GdevAuthService {
   invalidMessage: string = 'Use a valid email address'
   wrongPasswordMessage: string = 'Wrong Password'
   userCollection: string = 'users'
+  onLoggedRedirectRoute: string = '/'
 
   constructor (
     private afAuth: AngularFireAuth,
@@ -43,30 +44,46 @@ export class GdevAuthService {
 
 
   // ? Iniciar sesión con una cuenta google
-  async googleSingIn() {
+  async googleSingIn(): Promise<firebase.User | null>  {
 
     // Abre el popup de autenticación
     const provider = new firebase.auth.GoogleAuthProvider();
     var credential = await this.afAuth.signInWithPopup( provider )
 
     // Guardar los datos de cliente nuevo en firebase
-    if(credential.user) return this.updateUserData( credential.user )
+    if (credential.user){
+      this.updateUserData(credential.user)
+      return credential.user
+    } else {
+      return null
+    }
+
   }
 
-  async facebookSingIn() {
+  async facebookSingIn(): Promise<firebase.User | null>{
 
     // Abre el popup de autenticación
     const provider = new firebase.auth.FacebookAuthProvider();
     var credential = await this.afAuth.signInWithPopup( provider )
 
     // Guardar los datos de cliente nuevo en firebase
-    if(credential.user) return this.updateUserData( credential.user )
+    if (credential.user){
+      this.updateUserData(credential.user)
+      return credential.user
+    } else {
+      return null
+    }
   }
 
-  async emailSignIn( email:string, pwd: string ) {
+  async emailSignIn( email:string, pwd: string ):Promise<firebase.User | null> {
     try {
       var credential = await this.afAuth.signInWithEmailAndPassword( email, pwd )
-      if(credential.user) return this.updateUserData( credential.user )
+      if (credential.user){
+        this.updateUserData(credential.user)
+        return credential.user
+      } else {
+        return null
+      }
     } catch ( error ) {
       console.log( error )
       if (error.code.includes('not-found')) {
@@ -81,6 +98,7 @@ export class GdevAuthService {
         // alert( this.wrongPasswordMessage )
         this.listenForErros.next(this.wrongPasswordMessage)
       }
+      return null
     }
   }
 
@@ -100,7 +118,7 @@ export class GdevAuthService {
     }
 
 
-    this.router.navigate( [ '' ] );
+    this.router.navigate( [ this.onLoggedRedirectRoute ] );
   }
 
   restorePwd(email: string, message?: string) {
